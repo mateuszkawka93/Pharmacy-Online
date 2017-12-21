@@ -1,0 +1,28 @@
+﻿@using Pharmacy_Online.Infrastructure
+@model IEnumerable<Pharmacy_Online.Models.Product>
+
+
+@foreach (var products in Model)
+{
+    <div class="col-md-4 thumbnail" style="overflow: hidden">
+
+        <a class="cartIcon" href="@Url.Action("AddToCart", "Cart", new {id = products.ProductId})">
+            <img src="@Url.Content("~/Content/Images/cart.png")">
+        </a>
+
+
+        <a class="details-link" href="@Url.Action("Details", "Products", new {id = products.ProductId})">
+            @if (products.Bestseller)
+            {
+                <div id="bestsellerFlag"></div>
+            }
+            <img class="product-img" src="@Url.ProductsPicturePath(products.ImageFile)">
+            <h1>
+                @products.Producer - @products.Name
+            </h1>
+            <h2 id="price">@products.Price zł</h2>
+
+        </a>
+
+    </div>
+}

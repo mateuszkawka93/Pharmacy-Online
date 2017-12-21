@@ -1,0 +1,189 @@
+﻿@using System.Web.Optimization
+@using Pharmacy_Online.Models
+@model IEnumerable<Pharmacy_Online.Models.Order>
+@{
+    ViewBag.Title = "Lista zamówień";
+    Layout = "~/Views/Shared/_ManageLayout.cshtml";
+}
+
+<h2>Twoje zamówienia</h2>
+<br/>
+
+<div>
+    @if (Model.Any())
+    {
+        <div class="container">
+            @foreach (var order in Model)
+            {
+                <div @if (order.OrderStatus == OrderStatus.New)
+                     {
+                         <text> class="newOrder" </text>
+                     }>
+                    <div id="list" class="row" style="text-align: center">
+
+                        <div class="col-md-1">
+                            <strong>Numer zamówienia: </strong><br/> @order.OrderId
+                        </div>
+                        <div class="col-md-2">
+                            <strong>Data zakupu:</strong><br/> @order.OrderTime.ToString("dd-MM-yyyy")
+                        </div>
+                        <div class="col-md-1" style="text-align: center">
+                            <strong>Stan: </strong><br/>
+                            @if (ViewBag.UserIsAdmin)
+                            {
+                                using (Html.BeginForm("ChangeOrderStatus", "Manage"))
+                                {
+                                    @Html.HiddenFor(o => order.OrderId)
+                                    @Html.EnumDropDownListFor(o => order.OrderStatus, new {@class = "OrderStatusChange"})
+                                }
+                            }
+                            else
+                            {
+                                if (order.OrderStatus == OrderStatus.New)
+                                {
+                                    <p style="text-align: center">Przetwarzanie</p>
+                                }
+                                else
+                                {
+                                    <p>Zrealizowane</p>
+                                }
+                            }
+                        </div>
+                        <div class="col-md-2">
+                            <strong>Dane wysyłkowe:</strong><br/>
+                            @order.Name @order.Surname<br/>
+                            @order.Address<br/>
+                            @order.PostCode @order.City<br/>
+                        </div>
+                        <div class="col-md-2">
+                            <strong>Uwagi:</strong><br/>
+                            @order.Comment
+                        </div>
+                        <div class="col-md-2">
+                            <strong>Koszt z dostawą:</strong><br/>
+                            @if (order.Delivery == Delivery.Courier)
+                            {
+                                @(order.OrderValue + 15)<text> zł</text>
+                            }
+                            else if (order.Delivery == Delivery.PostOfficeRegistered)
+                            {
+                                @(order.OrderValue + 10)<text> zł</text>
+                            }
+                            else
+                            {
+                                @(order.OrderValue + 8)<text> zł</text>
+                            }
+                        </div>
+                        <div class="col-md-2">
+                            <strong> Sposób dostawy: </strong>
+                            @if (order.Delivery == Delivery.Courier)
+                            {
+                                <p>Przesyłka kurierska DHL + 15,00zł</p>
+                            }
+                            else if (order.Delivery == Delivery.PostOfficeRegistered)
+                            {
+                                <p>Paczka pocztowa polecona + 10,00zł</p>
+                            }
+                            else
+                            {
+                                <p>Paczka pocztowa ekonomiczna + 8,00zł</p>
+                            }
+                        </div>
+
+                    </div>
+                </div>
+                <br/>
+
+                <div class="row" style="text-align: center; font-weight: bold; vertical-align: middle">
+                    <div class="col-md-3">
+
+                    </div>
+                    <div class="col-md-3">
+                        Nazwa produktu
+                    </div>
+                    <div class="col-md-3">
+                        Ilość
+                    </div>
+                    <div class="col-md-3">
+                        Cena
+                    </div>
+                </div>
+
+                <div class="container">
+                    @foreach (var product in order.OrderPositions)
+                    {
+                        <hr/>
+                        <div class="row" style="text-align: center">
+                            <div class="col-md-3">
+                                <a href="@Url.Action("Details", "Products", new {id = product.ProductId})">
+                                    <img src="@Url.Content("~/Content/Products/" + product.Product.ImageFile)" style="width: 100px; height: 100px"/>
+                                </a>
+                            </div>
+                            <div class="col-md-3">
+                                <a href="@Url.Action("Details", "Products", new {id = product.ProductId})" style="text-align: center">@product.Product.Producer - @product.Product.Name</a>
+
+                            </div>
+                            <div class="col-md-3">
+                                @if (product.Amount == 1)
+                                {
+                                    <p>1 sztuka</p>
+                                }
+                                else if (product.Amount > 1 & product.Amount <= 4)
+                                {
+                                    <p>@product.Amount sztuki</p>
+                                }
+                                else
+                                {
+                                    <a> @product.Amount sztuk</a>
+                                }
+                            </div>
+                            <div class="col-md-3">
+
+                                @(product.OrderPrice * @product.Amount) zł
+
+                            </div>
+
+
+                        </div>
+                    }
+                </div>
+
+
+                <hr/>
+            }
+        </div>
+    }
+    else
+    {
+        <div style="text-align: center; margin-top: 50px; margin-bottom: 50px;">
+            Brak zamówień.
+        </div>
+    }
+</div>
+
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jqueryAndUI")
+    <script type="text/javascript">
+        $(".OrderStatusChange")
+            .on('change',
+                function(e) {
+                    //e.preventDefault();
+
+                    var f = $(this.form);
+                    var div = f.closest("div");
+                    var action = f.attr("action");
+                    var serializedForm = f.serialize();
+
+                    $.post(action, serializedForm)
+                        .done(function(data) {
+                            if (data === '@OrderStatus.New.ToString()') {
+                                div.addClass("newOrder");
+                            } else {
+                                div.removeClass("newOrder");
+                            }
+                        });
+                });
+    </script>
+}

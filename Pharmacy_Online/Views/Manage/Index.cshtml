@@ -1,0 +1,180 @@
+﻿@using System.Web.Optimization
+@model Pharmacy_Online.ViewModels.ManageCredentialsViewModel
+
+@{
+    ViewBag.Title = "Zarządzanie kontem";
+    Layout = "~/Views/Shared/_ManageLayout.cshtml";
+}
+
+
+<h2>Twoje dane</h2>
+
+@using (Html.BeginForm("ChangeProfile", "Manage", new {@class = "form-horizontal", role = "form"}))
+
+{
+    @Html.AntiForgeryToken()
+    <h4>Możesz tutaj zmienić swoje dane</h4>
+    
+    <hr/>
+    @*@Html.ValidationSummary("", new { @class = "text-danger" })*@
+
+    <div class="row">
+        <div class="col-md-6 col-md-offset-2">
+            @Html.LabelFor(m => m.UserData.Name, "Imię:", new { @class = "col-md-4 control-label" })
+            <div class="col-md-6">
+                @Html.TextBoxFor(m => m.UserData.Name, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.UserData.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <br />
+
+
+
+        <div class="col-md-6 col-md-offset-2">
+            @Html.LabelFor(m => m.UserData.Surname, "Nazwisko: ", new { @class = "col-md-4 control-label" })
+            <div class="col-md-6">
+                @Html.TextBoxFor(m => m.UserData.Surname, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.UserData.Surname, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <br />
+
+        <div class="form-group">
+            <div class="col-md-6 col-md-offset-2">
+                @Html.LabelFor(m => m.UserData.Address, "Ulica i nr domu: ", new { @class = "col-md-4 control-label" })
+                <div class="col-md-6">
+                    @Html.TextBoxFor(m => m.UserData.Address, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.UserData.Address, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-6 col-md-offset-2">
+                @Html.LabelFor(m => m.UserData.City, "Miasto: ", new { @class = "col-md-4 control-label" })
+                <div class="col-md-6">
+                    @Html.TextBoxFor(m => m.UserData.City, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.UserData.City, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-6 col-md-offset-2">
+                @Html.LabelFor(m => m.UserData.PostCode, "Kod pocztowy: ", new { @class = "col-md-4 control-label" })
+                <div class="col-md-6">
+                    @Html.TextBoxFor(m => m.UserData.PostCode, new { @class = "form-control", placeholder = "xx-xxx" })
+                    @Html.ValidationMessageFor(m => m.UserData.PostCode, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-6 col-md-offset-2">
+                @Html.LabelFor(m => m.UserData.Phone, "Telefon: ", new { @class = "col-md-4 control-label" })
+                <div class="col-md-6">
+                    @Html.TextBoxFor(m => m.UserData.Phone, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.UserData.Phone, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-6 col-md-offset-2">
+                @Html.LabelFor(m => m.UserData.Email, "Email: ", new { @class = "col-md-4 control-label" })
+                <div class="col-md-6">
+                    @Html.TextBoxFor(m => m.UserData.Email, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.UserData.Email, "", new { @class = "text-danger" })
+
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+
+            <br/>
+            <div class="row" >
+                <div class="form-group">
+                    <div class="col-md-3 col-md-offset-4"  style="display: inline-block">
+                        <input type="submit" value="Potwierdź" class="btn btn-default"/>
+                    </div>
+                </div>
+            </div>
+        
+    
+}
+
+<hr/>
+
+<h2>Zmiana hasła</h2>
+
+@using (Html.BeginForm("ChangePassword", "Manage", FormMethod.Post, new {@class = "form-horizontal", role = "form"}))
+{
+    @Html.AntiForgeryToken()
+    <h4>Tutaj możesz dokonać zmiany swojego hasła</h4>
+
+            @*<div class="manage-error">
+                    @Html.ValidationMessage("password-error", "")
+                </div>
+            *@
+    if (Model.Message.HasValue)
+    {
+        <div class="manage-message">
+            @switch (Model.Message)
+            {
+                case Pharmacy_Online.Controllers.ManageController.ManageMessageId.ChangePasswordSuccess:
+                    @: Hasło zmienione pomyślnie!
+                    break;
+                case Pharmacy_Online.Controllers.ManageController.ManageMessageId.Error:
+                    @: Wystąpił błąd
+                    break;
+            }
+        </div>
+    }
+
+
+    <hr/>
+    @Html.ValidationSummary("", new {@class = "text-danger"})
+    <div class="form-group">
+        <div class="col-md-6 col-md-offset-3">
+            @Html.LabelFor(m => m.ChangePasswordViewModel.OldPassword, "Aktualne hasło:", new { @class = "col-md-2 control-label" })
+            <div class="col-md-6">
+                @Html.PasswordFor(m => m.ChangePasswordViewModel.OldPassword, new { @class = "form-control" })
+            </div>
+            </div>
+        </div>
+    <div class="form-group">
+        <div class="col-md-6 col-md-offset-3">
+            @Html.LabelFor(m => m.ChangePasswordViewModel.NewPassword, "Nowe hasło:", new { @class = "col-md-2 control-label" })
+            <div class="col-md-6">
+                @Html.PasswordFor(m => m.ChangePasswordViewModel.NewPassword, new { @class = "form-control" })
+            </div>
+            </div>
+        </div>
+    <div class="form-group">
+        <div class="col-md-6 col-md-offset-3">
+            @Html.LabelFor(m => m.ChangePasswordViewModel.ConfirmPassword, "Potwierdź hasło:", new { @class = "col-md-2 control-label" })
+            <div class="col-md-6">
+                @Html.PasswordFor(m => m.ChangePasswordViewModel.ConfirmPassword, new { @class = "form-control" })
+            </div>
+            </div>
+        </div>
+    <div class="form-group">
+        <div class="col-md-offset-4 col-md-8">
+            <input type="submit" value="Zmień hasło" class="btn btn-default"/>
+        </div>
+    </div>
+}
+
+@section Scripts
+{
+
+    <script src="~/Scripts/jquery-3.2.1.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+}

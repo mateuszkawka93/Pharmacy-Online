@@ -1,0 +1,63 @@
+﻿@using System.Collections
+@using Pharmacy_Online.Models
+@using Delivery = Pharmacy_Online.ViewModels.Delivery
+@model Pharmacy_Online.ViewModels.ConfirmOrderEmail
+Content-Type: text/plain; charset=utf-8
+
+Dziękujemy!
+
+Właśnie złożyłeś zamówienie w aptece internetowej Bemini.pl
+
+Zamówione przez Ciebie pozycje:
+
+@{
+    IEnumerable<OrderPosition> orderPositions = Model.OrderPositions;
+
+    for (int i = 0; i < orderPositions.Count(); i++)
+    {
+
+        @orderPositions.ElementAt(i).Product.Name <br/>
+         
+    }
+}
+
+Łączna kwota za zamówione produkty to: @Model.TotalValue
+
+@if (Model.DeliveryValue == Delivery.Courier)
+{
+<text>Wybrano sposób dostawy kurierem DHL + 15,00zł</text>
+}
+else if (Model.DeliveryValue == Delivery.PostOfficeRegistered)
+{
+    <text>Wybrano sposób dostawy Pocztą Polską + 10,00zł</text>
+}
+
+else
+{
+    <text>Wybrano sposób dostawy Pocztą Polską + 8,00zł</text>
+}
+
+W celu sfinalizowania transakcji prosimy o przelew kwoty @if (Model.DeliveryValue == Delivery.Courier)
+{
+      @(Model.TotalValue + 15)   
+}
+else if (Model.DeliveryValue == Delivery.PostOfficeRegistered)
+{
+    @(Model.TotalValue + 10)
+}
+else
+{
+    @(Model.TotalValue + 8)
+}
+zł, tytułem zamówienia nr @Model.OrderNumber na nasze konto:
+
+Apteka Bemini.pl Sp.ZOO. Wrocław
+ul. Szwedzka 3/5
+54-401 Wrocław
+PKO BP 4251 0000 4637 5768 00
+
+Zaraz po zaksięgowaniu środków na koncie dokonamy wysyłki zamówionych produktów
+
+Dziękujemy i zapraszamy ponownie!
+
+Zespoł Bemini.pl

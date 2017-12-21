@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<mvcSiteMap xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0"
+            xsi:schemaLocation="http://mvcsitemap.codeplex.com/schemas/MvcSiteMap-File-4.0 MvcSiteMapSchema.xsd">
+
+  <mvcSiteMapNode title="Home" controller="Home" action="Index">
+    <mvcSiteMapNode title="List" controller="Products" action="List"
+                    dynamicNodeProvider="Pharmacy_Online.Infrastructure.CategoriesDynamicNodeProvider, Pharmacy_Online">
+      <mvcSiteMapNode title="Details" controller="Products" action="Details"
+                      dynamicNodeProvider="Pharmacy_Online.Infrastructure.ProductsDetailsDynamicNodeProvider, Pharmacy_Online" />
+    </mvcSiteMapNode>
+    <mvcSiteMapNode title="Koszyk" controller="Cart" action="Index">
+      <mvcSiteMapNode title="Dane zamówienia" controller="Cart" action="Purchase"/>
+      <mvcSiteMapNode title="Potwierdzenie zamówienia" controller="Cart" action="Confirm"/>
+      <mvcSiteMapNode title="Potwierdzenie zamówienia" controller="Cart" action="ValidateOrder"/>
+    </mvcSiteMapNode>
+        <mvcSiteMapNode title="Konto" controller="Manage" action="Index">
+          <mvcSiteMapNode title="Rejestracja" controller="Account" action="Register" />
+          <mvcSiteMapNode title="Logowanie" controller="Account" action="Login" />
+          <mvcSiteMapNode title="Dodaj produkt" controller="Manage" action="AddProduct" />
+          <mvcSiteMapNode title="Twoje dane" controller="Manage" action="Index" />
+          <mvcSiteMapNode title="Zamówienia" controller="Manage" action="OrderList" />
+          <mvcSiteMapNode title="Ukryte produkty" controller="Manage" action="ShowHiddenList" />
+          
+        </mvcSiteMapNode>
+      
+    </mvcSiteMapNode>
+  
+
+</mvcSiteMap>

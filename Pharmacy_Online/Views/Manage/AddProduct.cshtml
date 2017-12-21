@@ -1,0 +1,150 @@
+﻿@model Pharmacy_Online.ViewModels.EditProductViewModel
+
+@{
+    ViewBag.Title = "Dodaj produkt";
+    Layout = "~/Views/Shared/_ManageLayout.cshtml";
+}
+
+<h2>Dodaj produkt</h2>
+<br />
+<h4>Wprowadź dane, aby dodać nowy produkt lub przejdź do produktów ukrytych</h4>
+<hr />
+
+@if (Model.Confirm.HasValue && Model.Confirm.Value)
+{
+    <div style="text-align: center; color: green">Pomyślnie wprowadzono zmiany</div>
+}
+
+@using (Html.BeginForm("AddProduct", "Manage", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    @Html.HiddenFor(o => o.Product.ProductId)
+    @Html.HiddenFor(o => o.Product.ImageFile)
+    @Html.HiddenFor(o => o.Product.AddTime)
+    <div class="row">
+        <div class="col-md-3 col-md-offset-2">
+
+            <a href="@Url.Action("ShowHiddenList", "Manage")" class="btn btn-default" role="button">Pokaż ukryte produkty </a>
+            <br />
+        </div>
+    </div>
+
+
+            <div class="row">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Product.Name, "Nazwa produktu:", new { @class = "col-md-2 control-label" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(m => m.Product.Name, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Product.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Product.Producer, "Producent:", new { @class = "col-md-2 control-label" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(m => m.Product.Producer, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Product.Producer, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+
+
+
+            <div class="row">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Product.Price, "Cena: ", new { @class = "col-md-2 control-label" })
+                    <div class="col-sm-4">
+                        @Html.TextBoxFor(m => m.Product.Price, new { @class = "form-control" })
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Categories, "Kategoria:", new { @class = "col-md-2 control-label" })
+                    <div class="col-sm-4">
+                        @Html.DropDownListFor(m => m.Product.CategoryId, new SelectList(Model.Categories, "CategoryId", "Name", Model.Categories.First().CategoryId), new { @class = "form-control" })
+                        @*@Html.ValidationMessageFor(m => m.Product.Producer, "", new {@class = "text-danger"})*@
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Product.Description, "Opis: ", new { @class = "col-md-2 control-label" })
+                    <div class="col-sm-4">
+                        @Html.TextAreaFor(m => m.Product.Description, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Product.Description, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Product.Recommendation, "Wskazania: ", new { @class = "col-md-2 control-label" })
+                    <div class="col-sm-4">
+                        @Html.TextAreaFor(m => m.Product.Recommendation, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Product.Recommendation, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Product.Ingredients, "Skład: ", new { @class = "col-md-2 control-label" })
+                    <div class="col-sm-4">
+                        @Html.TextAreaFor(m => m.Product.Ingredients, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Product.Ingredients, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Product.Bestseller, "Bestseller: ", new { @class = "col-md-2 control-label" })
+                    <div class="col-sm-4">
+                        @Html.CheckBoxFor(m => m.Product.Bestseller, new { @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            if (ViewBag.EditMode == null || !ViewBag.EditMode)
+            {
+            <div class="row">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Product.ImageFile, "Plik obrazka: ", new { @class = "col-md-2 control-label" })
+                </div>
+                <div class="col-sm-4">
+                    <label class="btn btn-default">
+                        <input type="file" name="file">
+                    </label>
+
+                </div>
+            </div>
+
+            }
+            <br />
+            <div class="row">
+                <div class="col-md-3 col-md-offset-2">
+                    @if (ViewBag.EditMode == true)
+                    {
+                        if (Model.Product.Hidden)
+                        {
+                            <a href="@Url.Action("ShowProduct", "Manage", new {productId = Model.Product.ProductId})" class="btn btn-default" role="button">Pokaż produkt </a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("HideProduct", "Manage", new { productId = Model.Product.ProductId})" class="btn btn-default" role="button">Ukryj produkt </a>
+                        }
+                    }
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 col-md-offset-2">
+                    <input type="submit" class="btn btn-default" role="button" value="Zapisz" />
+                    @*<a href="@Url.Action("Index", "Manage")" class="btn btn-default" role="button">Wróć do koszyka</a>*@
+                </div>
+            </div>
+            <hr />
+
+
+            }

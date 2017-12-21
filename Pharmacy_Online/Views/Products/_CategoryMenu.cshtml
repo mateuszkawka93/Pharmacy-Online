@@ -1,0 +1,14 @@
+﻿@model IEnumerable<Pharmacy_Online.Models.Category>
+    
+<ul class="nav nav-pills nav-stacked">
+
+
+    @foreach (var categories in Model)
+    {
+        <li>
+            <a href="@Url.Action("List", "Products", new {categoryname = categories.Name})">@categories.Name</a>
+        </li>
+    }
+
+
+</ul>

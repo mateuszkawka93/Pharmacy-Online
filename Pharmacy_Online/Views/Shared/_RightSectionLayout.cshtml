@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Zaloguj się";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+
+            @Html.Action("CategoryMenu", "Products")
+        </div>
+        <div class="col-md-9">
+            <nav class="breadcrumb">
+                <img src="@Url.Content("~/Content/Images/minihouse.png")"/>
+                <a class="breadcrumb-item" href="#">
+                    @Html.MvcSiteMap().SiteMapPath()
+                </a>
+            </nav>
+            <section>
+                <div>
+                    <h1>@RenderSection("SectionTitle", required: false)</h1>
+                </div>
+                @RenderBody()
+            </section>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    @RenderSection("Scripts", required:false)
+}

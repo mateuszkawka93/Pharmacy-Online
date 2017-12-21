@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Pharmacy_Online.Models.Product>
+
+
+@{
+    ViewBag.Title = "Ukryte produkty";
+    Layout = "~/Views/Shared/_ManageLayout.cshtml";
+}
+<div class="row">
+    <div class="col-md-7">
+        <h2>Ukryte produkty</h2>
+        <br/>
+       
+            <h4>Przejdź do szczegółów produktu i edytuj produkt, aby dodać ponownie</h4>
+        
+        
+        
+        <hr />
+    </div>
+</div>
+
+
+
+
+
+@foreach (var hidden in Model)
+{
+    
+    <div class="row" style="text-align: center">
+
+        <div class="col-md-3">
+            <a href="@Url.Action("Details", "Products", new {id = hidden.ProductId})">
+                <img src="@Url.Content("~/Content/Products/" + hidden.ImageFile)" style="width: 100px; height: 100px" />
+            </a>
+        </div>
+        <div class="col-md-4" style="margin-top: 30px;">
+            <a href="@Url.Action("Details", "Products", new {id = hidden.ProductId})" style="text-align: left">@hidden.Producer - @hidden.Name</a>
+
+        </div>
+    </div>
+    <hr />
+
+}
+
+
+
+
+

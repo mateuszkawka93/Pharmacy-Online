@@ -1,0 +1,170 @@
+﻿@using System.Web.Optimization
+@using Pharmacy_Online.Controllers
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>@ViewBag.Title</title>
+
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css"/>
+    @Styles.Render("~/Content/themes/base/css")
+    <!-- Bootstrap CSS -->
+    <link href="@Url.Content("~/Content/bootstrap.min.css")" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="container">
+    <header>
+        <div class="navbar-collapse collapse">
+
+            @Html.Partial("_LoginPartialForManage")
+
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <a href="@Url.Content("~/")">
+                        <img src="@Url.Content("~/Content/Images/logo2.png")" class="center"/>
+                    </a>
+                </div>
+                <div class="col-md-6">
+                    <div id="imaginary_container">
+                        <form id="search-forms" method="get" data-ajax="true" data-ajax-target="#CategoryListID">
+                            <div class="input-group stylish-input-group">
+
+                                <input id="search-filter" name="searchQuery" type="search" class="form-control" placeholder="Szukaj..." data-autocomplete-source="@Url.Action("ProductTips", "Products")">
+                                <span class="input-group-addon">
+
+                                        <button type="submit">
+                                            Znajdź w aptece
+                                        </button>
+                                    </span>
+
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="row">
+                        <div id="cart_header">
+                            <a>
+                                <img src="@Url.Content("~/Content/Images/images.png")"/>
+                            </a>
+                            <a id="koszykHeaderLink" href="@Url.Action("Index", "Cart")">
+                                Koszyk (<span id="cart-item-amount">@Html.Action("GetItemAmount", "Cart")</span>)
+                                <span></span>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+    <nav class="breadcrumb">
+        <img src="@Url.Content("~/Content/Images/minihouse.png")"/>
+        <a class="breadcrumb-item" href="link">
+            @Html.MvcSiteMap().SiteMapPath()
+        </a>
+
+    </nav>
+
+    @*<div class="container">
+                <form id="search-form">
+                    <input id="search-filter" type="search" name="searchQuery"
+                           data-autocomplete-source="@Url.Action("ProductTips", "Products")"
+                           placeholder="Wprowadź tekst, aby przefiltrować..." />
+                    <input type="submit" value="" />
+                </form>
+            </div>*@
+
+
+    @*<img src="@Url.Content("~/Content/Images/dostawa.jpg")"/>*@
+
+    <div class="container">
+        
+
+
+                @RenderBody()
+          
+    </div>
+
+    <footer>
+        <nav>
+            <ul>
+                <li>@Html.ActionLink("O nas", "StaticPages", "Home", new {name = "About"}, null)</li>
+                <li>@Html.ActionLink("Społeczność", "StaticPages", "Home", new {name = "Community"}, null)</li>
+                <li>@Html.ActionLink("Opinie", "StaticPages", "Home", new {name = "Review"}, null)</li>
+                <li>@Html.ActionLink("Pomoc", "StaticPages", "Home", new {name = "Help"}, null)</li>
+                <li>@Html.ActionLink("Regulamin", "StaticPages", "Home", new {name = "Regulations"}, null)</li>
+                <li>@Html.ActionLink("Kontakt", "StaticPages", "Home", new {name = "Contact"}, null)</li>
+
+            </ul>
+        </nav>
+        <div id="footerLogo">
+        </div>
+        <div id="footerCopyright">
+            Copyright &copy; 2017 Bemini
+        </div>
+    </footer>
+</div>
+<div>
+    @RenderSection("Scripts", false)
+</div>
+
+
+</body>
+</html>
+
+@Scripts.Render("~/bundles/jqueryAndUI")
+
+<script>
+
+    $(function() {
+
+        var setupAutoComplete = function() {
+
+            var $input = $(this);
+            var options =
+            {
+                source: $input.attr("data-autocomplete-source"),
+                select: function(event, ui) {
+                    $input = $(this);
+                    $input.val(ui.item.label);
+                    var $form = $input.parents("form:first");
+                    $form.submit();
+
+                }
+            };
+
+            $input.autocomplete(options);
+        };
+
+        var ajaxSubmit = function() {
+            var $form = $(this);
+
+            var settings = {
+                data: $(this).serialize(),
+                url: $(this).attr("action"),
+                type: $(this).attr("method")
+            };
+
+            $.ajax(settings)
+                .done(function(result) {
+                    var $targetElement = $($form.data("ajax-target"));
+                    var $newContent = $(result);
+                    $($targetElement).replaceWith($newContent);
+                    $newContent.effect("slide");
+                });
+
+            return false;
+        };
+
+
+        $("#search-filter").each(setupAutoComplete);
+        $("#search-forms").submit(ajaxSubmit);
+    });
+
+</script>

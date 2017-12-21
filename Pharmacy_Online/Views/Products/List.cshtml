@@ -1,0 +1,94 @@
+﻿@using MvcSiteMapProvider.Web.Html
+@using System.Web.Optimization
+@using Pharmacy_Online.Models
+
+@{
+    ViewBag.Title = "Kategorie";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+
+            @Html.Action("CategoryMenu")
+        </div>
+        <div class="col-md-9">
+            <nav class="breadcrumb">
+                <img src="@Url.Content("~/Content/Images/minihouse.png")" />
+                <a class="breadcrumb-item" href="#">
+                    @Html.MvcSiteMap().SiteMapPath()
+                </a>
+
+
+
+                @*<form id="search-form" >
+                    <input id="search-filter" type="search" name="searchQuery"
+                           data-autocomplete-source="@Url.Action("ProductTips")"
+                           placeholder="Wprowadź tekst, aby przefiltrować..." />
+                    <input type="submit" value="" />
+                </form>*@
+
+
+            </nav>
+            <div id="CategoryListID">
+                @Html.Partial("_ProductsList")
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jqueryAndUI")
+
+    <script>
+
+        $(function() {
+
+            var setupAutoComplete = function() {
+
+                var $input = $(this);
+                var options =
+                {
+                    source: $input.attr("data-autocomplete-source"),
+                    select: function(event, ui) {
+                        $input = $(this);
+                        $input.val(ui.item.label);
+                        var $form = $input.parents("form:first");
+                        $form.submit();
+
+                    }
+                };
+
+                $input.autocomplete(options);
+            };
+
+            var ajaxSubmit = function() {
+                var $form = $(this);
+
+                var settings = {
+                    data: $(this).serialize,
+                    url: $(this).attr("action"),
+                    type: $(this).attr("method")
+                };
+
+                $.ajax(settings)
+                    .done(function(result) {
+                        var $targetElement = $($form.data("ajax-target"));
+                        var $newContent = $(result);
+                        $($targetElement).replaceWith($newContent);
+                        $newContent.effect("slide");
+                    });
+
+                return false;
+            };
+
+
+            $("#search-filter").each(setupAutoComplete);
+            $("serach-form").submit(ajaxSubmit);
+        });
+
+    </script>
+
+}

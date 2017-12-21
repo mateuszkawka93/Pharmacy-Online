@@ -1,0 +1,76 @@
+﻿@model Pharmacy_Online.ViewModels.HomeViewModel
+    @using Pharmacy_Online.Infrastructure
+
+@{
+    ViewBag.Title = "Apteka Bemini.pl";
+    
+}
+
+<div class="container">
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav navbar-center">
+                        @foreach (var categories in Model.Categories)
+                        {
+                            <li>
+                                <a href="@Url.Action("List", "Products", new {categoryname = categories.Name.ToLower()})">
+                                    @categories.Name
+                                </a>
+                            </li>
+                        }
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+
+            @foreach (var bestseller in Model.Bestsellers)
+            {
+                
+                     <div class="col-md-4 thumbnail" style="overflow: hidden">
+                         <a class="cartIcon" href="@Url.Action("AddToCart", "Cart", new {id = bestseller.ProductId})">
+
+                             <img src="~/Content/Images/cart.png"/>
+                         </a>
+                         <a class="details-link" href="@Url.Action("Details", "Products", new {id = bestseller.ProductId})">
+
+                             <div class="bestsellerFlag"></div>
+                             <img class="product-img" src="@Url.ProductsPicturePath(bestseller.ImageFile)"/>
+                             <h1>
+                                 @bestseller.Name - @bestseller.Producer
+                             </h1>
+                             <h2 id="price">@bestseller.Price zł</h2>
+                         </a>
+                     </div>
+                 
+            }
+
+        </div>
+
+        <div class="row">
+
+            @foreach (var news in Model.News)
+            {
+                <div class="col-md-4 thumbnail" style="overflow: hidden">
+                    <a class="cartIcon" href="@Url.Action("AddToCart", "Cart", new {id = news.ProductId})">
+                        <img src="~/Content/Images/cart.png" />
+                    </a>
+                    <a class="details-link" href="@Url.Action("Details", "Products", new {id = news.ProductId})">
+                        <div class="newFlag"></div>
+                        <img class="product-img" src="@Url.ProductsPicturePath(news.ImageFile)" />
+                        <h1>
+                            @news.Name - @news.Producer
+                        </h1>
+                        <h2 id="price">@news.Price zł</h2>
+                    </a>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

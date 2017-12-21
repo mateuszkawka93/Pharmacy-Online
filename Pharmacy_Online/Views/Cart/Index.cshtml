@@ -1,0 +1,116 @@
+﻿@model Pharmacy_Online.ViewModels.CartViewModel
+@using System.Web.Optimization
+@using System.Web.UI.WebControls
+@using Pharmacy_Online.Infrastructure
+
+@{
+    ViewBag.Title = "Koszyk";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            @Html.Action("CategoryMenu", "Products")
+        </div>
+        <div class="col-md-9">
+            <nav class="breadcrumb">
+                <img src="../Content/Images/minihouse.png"/>
+                <a class="breadcrumb-item" href="#">
+                    @Html.MvcSiteMap().SiteMapPath()
+                </a>
+            </nav>
+            <section>
+                <div>
+                    <h2 style="text-align: center">Twój koszyk</h2>
+                </div>
+                <table id="koszykTabela">
+
+                    @foreach (var cartPosition in Model.CartPositions)
+                    {
+                        <tr id="cartRow-@cartPosition.Product.ProductId">
+                            <td>
+                                <a href="@Url.Action("Details", "Products", new {id = cartPosition.Product.ProductId})">
+                                    <img src="@Url.Content("~/Content/Products/" + cartPosition.Product.ImageFile)"/>
+                                </a>
+                            </td>
+                            <td style="text-align: center; font-size: 16px">
+                                <a href="@Url.Action("Details", "Products", new {id = cartPosition.Product.ProductId})">@cartPosition.Product.Name</a>
+                            </td>
+                            <td style="text-align: center; font-size: 16px">Ilość: <span id="cart-Position-Amount-@cartPosition.Product.ProductId">@cartPosition.Amount</span></td>
+                            <td style="text-align: center; font-size: 16px">@String.Format("{0:c}", cartPosition.Value)</td>
+                            <td>
+                                <a class="removeProduct" data-id="@cartPosition.Product.ProductId" href="#">Usuń</a>
+                            </td>
+                        </tr>
+                    }
+
+                    <tr id="empty-cart-message" @if (Model.CartPositions != null && Model.CartPositions.Count > 0)
+                                                {
+                                                    <text> class="hidden" </text>
+                                                }>
+                        <td>Twój koszyk jest pusty ! Może chcesz coś dodać ?</td>
+                    </tr>
+
+                </table>
+                <div id="CenaCalkowita" style="">
+                    Razem: <span id="totalPriceValue">@String.Format("{0:c}", Model.TotalPrice) </span>
+                </div>
+            </section>
+            <div class="btn-toolbar">
+                <a href="@Url.Action("Index", "Home")" class="btn btn-default" role="button">Kontynnuj zakupy</a>
+
+                @if (Model.TotalPrice > 0)
+                {
+                    <a href="@Url.Action("Purchase", "Cart")" id="purchasebutton" class="btn btn-default" role="button">Zapłać</a>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    @Scripts.Render("~/bundles/jqueryAndUI")
+
+    <script type="text/javascript">
+        $(function() {
+            $(".removeProduct")
+                .click(function() {
+
+                    var recordToRemove = $(this).attr("data-id");
+
+                    if (recordToRemove !== '') {
+                        $.post("/Cart/RemoveFromCart",
+                            { "productId2": recordToRemove },
+                            function(response) {
+                                if (response.RemovingPositionAmount === 0) {
+                                    $('#cartRow-' + response.IdRemoveItem)
+                                        .fadeOut('slow',
+                                            function() {
+                                                if (response.CartPositionAmount === 0) {
+                                                    $("#empty-cart-message").removeClass("hidden");
+                                                }
+
+                                            });
+                                } else {
+                                    $('#cart-Position-Amount-' + response.IdRemoveItem)
+                                        .text(response.RemovingPositionAmount);
+                                }
+
+                                if (response.CartPositionAmount === 0) {
+                                    $('#purchasebutton').addClass('hidden');
+                                    $('#CenaCalkowita').addClass('invisible');
+                                }
+                                $('#totalPriceValue').text(response.CartTotalValue);
+                                $('#cartHeaderItemAmount').text(response.CartPositionAmount);
+                            });
+                        return false;
+                    }
+                });
+        });
+
+
+    </script>
+}
